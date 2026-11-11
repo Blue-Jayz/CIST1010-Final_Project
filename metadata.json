@@ -1,0 +1,6 @@
+{
+  "name": "Don't Wait Until Midnight - UNO First-Year Survival Guide",
+  "description": "A first-year student survival guide for University of Nebraska Omaha (UNO) students, created by Justin Blue for CIST 1010 College and Career Success.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
