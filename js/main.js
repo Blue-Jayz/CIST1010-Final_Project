@@ -1,79 +1,46 @@
-/**
- * Don't Wait Until Midnight - UNO First-Year Survival Guide
- * Author: Justin Blue | CIST 1010
- * Clean, lightweight vanilla JS for interactive classroom walkthrough & accessibility
- */
+// Append the following right before the closing "})(jQuery);" in assets/js/main.js:
 
-document.addEventListener('DOMContentLoaded', () => {
-  // 1. Mobile Navigation Toggle
-  const mobileBtn = document.querySelector('.mobile-menu-btn');
-  const mainNav = document.querySelector('.main-nav');
+	// Classroom Projector Mode Toggle
+		var $projectorToggle = $('#projectorToggle');
+		if ($projectorToggle.length) {
+			$projectorToggle.on('click', function(e) {
+				e.preventDefault();
+				var isProjector = $body.toggleClass('projector-mode').hasClass('projector-mode');
+				$(this).attr('aria-pressed', isProjector ? 'true' : 'false');
+				var $status = $(this).find('.projector-status');
+				if ($status.length) {
+					$status.text(isProjector ? 'ON' : 'OFF');
+				}
+			});
+		}
 
-  if (mobileBtn && mainNav) {
-    mobileBtn.addEventListener('click', () => {
-      const isExpanded = mobileBtn.getAttribute('aria-expanded') === 'true';
-      mobileBtn.setAttribute('aria-expanded', String(!isExpanded));
-      mainNav.classList.toggle('is-open');
-    });
+	// Back to Top Button
+		var $backToTop = $('<button type="button" class="back-to-top-btn" id="backToTop" aria-label="Back to top" title="Back to top">&uarr;</button>')
+			.appendTo($body);
 
-    // Close mobile nav when clicking outside
-    document.addEventListener('click', (event) => {
-      if (!mainNav.contains(event.target) && !mobileBtn.contains(event.target) && mainNav.classList.contains('is-open')) {
-        mainNav.classList.remove('is-open');
-        mobileBtn.setAttribute('aria-expanded', 'false');
-      }
-    });
-  }
+		$window.on('scroll', function() {
+			if ($window.scrollTop() > 300)
+				$backToTop.addClass('visible');
+			else
+				$backToTop.removeClass('visible');
+		});
 
-  // 2. Classroom Projector Mode Toggle
-  const projectorBtn = document.getElementById('projectorToggle');
-  if (projectorBtn) {
-    projectorBtn.addEventListener('click', () => {
-      const isProjector = document.body.classList.toggle('projector-mode');
-      projectorBtn.setAttribute('aria-pressed', String(isProjector));
-      const statusSpan = projectorBtn.querySelector('.projector-status');
-      if (statusSpan) {
-        statusSpan.textContent = isProjector ? 'ON' : 'OFF';
-      }
-    });
-  }
+		$backToTop.on('click', function() {
+			$('html, body').animate({ scrollTop: 0 }, 300);
+		});
 
-  // 3. Back to Top Button
-  const backToTopBtn = document.getElementById('backToTop');
-  if (backToTopBtn) {
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 350) {
-        backToTopBtn.classList.add('visible');
-      } else {
-        backToTopBtn.classList.remove('visible');
-      }
-    });
+	// Keyboard Navigation for Classroom Walkthrough
+		$(document).on('keydown', function(e) {
+			if (['input', 'textarea', 'select'].includes(document.activeElement.tagName.toLowerCase()))
+				return;
 
-    backToTopBtn.addEventListener('click', () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-  }
-
-  // 4. Keyboard Shortcuts for Walkthrough Navigation (Left/Right Arrow keys)
-  document.addEventListener('keydown', (e) => {
-    // Only trigger if not typing inside an input/textarea
-    if (['input', 'textarea', 'select'].includes(document.activeElement.tagName.toLowerCase())) {
-      return;
-    }
-
-    if (e.key === 'ArrowRight') {
-      const nextBtn = document.querySelector('.walkthrough-btn.next');
-      if (nextBtn) {
-        window.location.href = nextBtn.getAttribute('href');
-      }
-    } else if (e.key === 'ArrowLeft') {
-      const prevBtn = document.querySelector('.walkthrough-btn.prev');
-      if (prevBtn) {
-        window.location.href = prevBtn.getAttribute('href');
-      }
-    }
-  });
-});
+			if (e.key === 'ArrowRight') {
+				var $nextBtn = $('.walkthrough-btn.next');
+				if ($nextBtn.length)
+					window.location.href = $nextBtn.attr('href');
+			} else if (e.key === 'ArrowLeft') {
+				var $prevBtn = $('.walkthrough-btn.prev');
+				if ($prevBtn.length)
+					window.location.href = $prevBtn.attr('href');
+			}
+		});
